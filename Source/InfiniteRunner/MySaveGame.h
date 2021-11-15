@@ -19,9 +19,19 @@ public:
 
     UPROPERTY(VisibleAnywhere, Category = Basic)
         FString SaveSlotName;
+
+    UPROPERTY(VisibleAnywhere, Category = Basic)
+        uint32 UserIndex;
     //Used to store the coins in game and save for relaunch
     UPROPERTY(VisibleAnywhere, Category = Basic)
-        int32 PlayerCoins = 0;
+        int32 PlayerCoins = 3000;
+    //Used to store the Maps in game and save for relaunch
+    UPROPERTY(VisibleAnywhere, Category = Basic)
+        bool LavaMapBought;
+    UPROPERTY(VisibleAnywhere, Category = Basic)
+        bool WaterMapBought;
+    UPROPERTY(VisibleAnywhere, Category = Basic)
+        bool SpaceMapBought;
 
     UMySaveGame();
 };

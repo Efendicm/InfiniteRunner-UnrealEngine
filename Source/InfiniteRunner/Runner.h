@@ -23,6 +23,15 @@ protected:
 	//Calls to endlessRunnerGameMode
 	UPROPERTY(VisibleInstanceOnly)
 		class AEndlessRunnerGameModeBase* RunGameMode;
+	//Calls to LavaLevelGameMode
+	UPROPERTY(VisibleInstanceOnly)
+		class ALavaLevelGameMode* LavaGameMode;
+	//Calls if Space Level
+	UPROPERTY(VisibleInstanceOnly)
+		class ASpaceGameMode* SpaceGameMode;
+	//Calls if water level
+	UPROPERTY(VisibleInstanceOnly)
+		class AWaterGameMode* WaterGameMode;
 	//Calls to gameInstance
 	UPROPERTY(VisibleInstanceOnly)
 		class UMyGameInstance* Game;
@@ -47,6 +56,8 @@ protected:
 	UPROPERTY()
 		FTimerHandle PowerUpRestartTimerHandle;
 
+	UPROPERTY()
+		FTimerHandle SuperFlyRestartTimerHandle;
 
 
 public:
@@ -56,12 +67,15 @@ public:
 	//Checks to see if dead
 	UPROPERTY()
 		bool rIsDead = false;
+	// get first player pawn location
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Varibles")
+	 FVector PlayerLocation;
 	//Checks to see if powerUp is on
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool PowerUpOn = false;
-
-	UPROPERTY()
-		bool SuperFly = false;
+	//Used for Fly Power Up
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool SuperFlying = false;
 	//Function used to Create Coins and PowerUps
 	UFUNCTION()
 		void AddCoin();
@@ -71,6 +85,13 @@ public:
 
 	UFUNCTION()
 		void PowerUpOver();
+
+	//Sets functions to turn on and off SuperFly
+	UFUNCTION()
+		void SuperFly();
+
+	UFUNCTION()
+		void SuperFlyOver();
 
 
 	//Create Death particle

@@ -10,19 +10,24 @@ UCLASS()
 class INFINITERUNNER_API ASuperFly : public AActor
 {
 	GENERATED_BODY()
-	
 
+protected:
+	//Calls to endlessRunnerGameMode
+	UPROPERTY(VisibleInstanceOnly)
+		class AEndlessRunnerGameModeBase* RunGameMode;
 public:
 	//Called if PowerUp is on or Off
 	UPROPERTY(EditAnywhere)
 		bool SuperFly = false;
-
+	//Calls to Runner
+	UPROPERTY(VisibleInstanceOnly)
+		class ARunner* Runner;
 	//Create The BluePrint Scene
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class USceneComponent* SceneComponent;
-	//Creates the Mesh in BluePrints
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		class UStaticMeshComponent* PowerUpMesh;
+	//Adds NiagaraComponent
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+		class UNiagaraComponent* PowerUpPart;
 	//Create the Sphere Collider
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class USphereComponent* SphereCollider;

@@ -29,6 +29,27 @@ public:
 	//Create the HUD
 	UPROPERTY(EditAnywhere, Category = "Config")
 		TSubclassOf<UUserWidget> MainMenuWidgetClass;
+	//Create the StoreHUD
+	UPROPERTY(EditAnywhere, Category = "Config")
+		TSubclassOf<UUserWidget> StoreHUDClass;
+	//Used to call The GameHUDWidgetClass
+	UPROPERTY(VisibleInstanceOnly, Category = "Runtime")
+		class UStoreHUD* StoreHud;
+
+	UPROPERTY(EditAnywhere, Category = "Config")
+		TSubclassOf<UUserWidget> MapHUDClass;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Runtime")
+		class UMapPick* MapHud;
+
+	UFUNCTION()
+		void StorePicked();
+	UFUNCTION()
+		void StoreBackBtn();
+	UFUNCTION()
+		void StartBackBtn();
+	UFUNCTION()
+		void StartBtn();
 
 	virtual void BeginPlay() override;
 };

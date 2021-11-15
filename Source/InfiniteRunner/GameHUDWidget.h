@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include <InfiniteRunner\SpaceGameMode.h>
 #include "GameHUDWidget.generated.h"
 
 
@@ -20,13 +21,18 @@ protected:
 	//Calls the pause menu widget
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
-
+	//Distance Text
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* PlayerDistance;
 	//Create the coin text block
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* CoinCount;
 	//Create the powerUpIcon
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UImage* Invincible;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UImage* SuperFly;
 	//pause button for Game
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* PauseBtn;
@@ -56,12 +62,27 @@ public:
 	UFUNCTION()
 		void PowerUpToHUD();
 
-
+	UFUNCTION()
+		void Distance();
+	//Sets booleans for Power Ups
 	UPROPERTY(EditAnywhere)
 		bool PowerUpOn = false;
 
+	UPROPERTY(EditAnywhere)
+		bool SuperFlyOn = false;
+
+
 	UFUNCTION(BlueprintCallable)
 		void InitializeHUD(AEndlessRunnerGameModeBase* RunGameMode);
+
+	UFUNCTION(BlueprintCallable)
+		void InitializeLavaHUD(ALavaLevelGameMode* LavaLevel);
+
+	UFUNCTION(BlueprintCallable)
+		void InitializeSpaceHUD(ASpaceGameMode* SpaceLevel);
+
+	UFUNCTION(BlueprintCallable)
+		void InitializeWaterHUD(AWaterGameMode* WaterLevel);
 
 
 	UFUNCTION(BlueprintCallable)
@@ -75,4 +96,6 @@ private:
 	TMap<FName, UWidgetAnimation*> AnimationMap;
 
 	UWidgetAnimation* SuperStrengthAnimation;
+
+	UWidgetAnimation* SuperFlyingAnimation;
 };

@@ -1,4 +1,4 @@
-
+                                                                                 
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -10,6 +10,7 @@
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include "EndlessRunnerGameModeBase.h"
 #include <Runtime\Engine\Classes\Kismet\KismetMathLibrary.h>
+#include "Niagara/Public/NiagaraComponent.h"
 
 // Sets default values
 ASuperSpeed::ASuperSpeed()
@@ -21,10 +22,11 @@ ASuperSpeed::ASuperSpeed()
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(SceneComponent);
 	SphereCollider->SetCollisionProfileName(TEXT("OverlapPawn"));
-	//create the powerUp Mesh
-	PowerUpMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PowerUpMesh"));
-	PowerUpMesh->SetupAttachment(SphereCollider);
-	PowerUpMesh->SetCollisionProfileName(TEXT("OverlapPawn"));
+	//ParticleSystem
+	PowerUpPart = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PowerUpPart"));
+	PowerUpPart->SetupAttachment(SceneComponent);
+	PowerUpPart->SetupAttachment(SphereCollider);
+	PowerUpPart->SetCollisionProfileName(TEXT("OverlapPawn"));
 	//Created to Roate PowerUp
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 	RotatingMovement->RotationRate = FRotator(0, 180, 0);

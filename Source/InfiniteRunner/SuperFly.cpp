@@ -7,6 +7,7 @@
 #include <InfiniteRunner\Runner.h>
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include "EndlessRunnerGameModeBase.h"
+#include "Niagara/Public/NiagaraComponent.h"
 #include <Runtime\Engine\Classes\Kismet\KismetMathLibrary.h>
 
 // Sets default values
@@ -19,10 +20,11 @@ ASuperFly::ASuperFly()
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(SceneComponent);
 	SphereCollider->SetCollisionProfileName(TEXT("OverlapPawn"));
-	//create the powerUp Mesh
-	PowerUpMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PowerUpMesh"));
-	PowerUpMesh->SetupAttachment(SphereCollider);
-	PowerUpMesh->SetCollisionProfileName(TEXT("OverlapPawn"));
+	//Adds NiagaraComponent
+	PowerUpPart = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PowerUpPart"));
+	PowerUpPart->SetupAttachment(SceneComponent);
+	PowerUpPart->SetupAttachment(SphereCollider);
+	PowerUpPart->SetCollisionProfileName(TEXT("OverlapPawn"));
 	//Created to Roate PowerUp
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 	RotatingMovement->RotationRate = FRotator(0, 180, 0);
@@ -40,9 +42,10 @@ void ASuperFly::BeginPlay()
 void ASuperFly::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ARunner* RunCharacter = Cast<ARunner>(OtherActor);
-	SuperFly = true;
-	if (RunCharacter && SuperFly)
+	UWorld* World = GetWorld();
+	if (RunCharacter)
 	{
+		RunCharacter->SuperFly();
 		if (OverlapSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), OverlapSound, GetActorLocation());

@@ -1,9 +1,9 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
-
-#include "LevelSpawner.h"
+#include "WaterLevelSpawner.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
-#include "EndlessRunnerGameModeBase.h"
+#include "WaterGameMode.h"
 #include "Runner.h"
 #include "CoinItem.h"
 #include "SuperSpeed.h"
@@ -12,10 +12,11 @@
 #include "Components/ArrowComponent.h"
 #include <Runtime\Engine\Classes\Kismet\KismetMathLibrary.h>
 
+
 // Sets default values
-ALevelSpawner::ALevelSpawner()
+AWaterLevelSpawner::AWaterLevelSpawner()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Create the base Scene for the Island to be spawned
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
@@ -65,33 +66,30 @@ ALevelSpawner::ALevelSpawner()
 	FloorTriggerBox->SetBoxExtent(FVector(32.f, 500.f, 200.f));
 	FloorTriggerBox->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 
-
-
 }
 
 // Called when the game starts or when spawned
-void ALevelSpawner::BeginPlay()
+void AWaterLevelSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	//Calls to see if RunGameMode being Called 
-	RunGameMode = Cast<AEndlessRunnerGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	WaterGameMode = Cast<AWaterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-	check(RunGameMode);
+	check(WaterGameMode);
 	//Calls to active Trigger box on Island For overlap
-	FloorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ALevelSpawner::OnTriggerBoxOverlap);
+	FloorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AWaterLevelSpawner::OnTriggerBoxOverlap);
 }
 
 // Called every frame
-void ALevelSpawner::Tick(float DeltaTime)
+void AWaterLevelSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
-
-void ALevelSpawner::SpawnItems()
+void AWaterLevelSpawner::SpawnItems()
 {
 	//Checks to see if the Obstacles and items are Valid to spawn them and not crash the game
-	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass)&& IsValid(CoinItemClass)&& IsValid(SpeedClass) && IsValid(FlyClass))
+	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinItemClass) && IsValid(SpeedClass) && IsValid(FlyClass))
 	{
 		SpawnLaneItems(MiddleLeft);
 		SpawnLaneItems(Middle);
@@ -105,7 +103,7 @@ void ALevelSpawner::SpawnItems()
 	}
 }
 //The math used to spawn every item in diffrent areas they all have a percentage all the way to 1.f
-void ALevelSpawner::SpawnLaneItems(UArrowComponent* Lane)
+void AWaterLevelSpawner::SpawnLaneItems(UArrowComponent* Lane)
 {
 	const float RandVal = FMath::FRandRange(0.f, 1.f);
 	FActorSpawnParameters SpawnParameters;
@@ -138,24 +136,24 @@ void ALevelSpawner::SpawnLaneItems(UArrowComponent* Lane)
 
 }
 //Used to add more floors when the Trigger box is overlap at the end of the Current Island
-void ALevelSpawner::OnTriggerBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWaterLevelSpawner::OnTriggerBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ARunner* RunCharacter = Cast<ARunner>(OtherActor);
 
 
 	if (RunCharacter)
 	{
-		RunGameMode->AddFloorTileMiddle(true);
-		RunGameMode->AddFloorTileLeft(true);
-		RunGameMode->AddFloorTileRight(true);
+		WaterGameMode->AddFloorTileMiddle(true);
+		WaterGameMode->AddFloorTileLeft(true);
+		WaterGameMode->AddFloorTileRight(true);
 
-		GetWorldTimerManager().SetTimer(DestroyHandle, this, &ALevelSpawner::DestroyFloorTile, 2.f, false);
+		GetWorldTimerManager().SetTimer(DestroyHandle, this, &AWaterLevelSpawner::DestroyFloorTile, 2.f, false);
 	}
 }
 
 
 //Used to Destroy Previous Islands
-void ALevelSpawner::DestroyFloorTile()
+void AWaterLevelSpawner::DestroyFloorTile()
 {
 	if (DestroyHandle.IsValid())
 	{
@@ -164,4 +162,6 @@ void ALevelSpawner::DestroyFloorTile()
 
 	this->Destroy();
 }
+
+
 

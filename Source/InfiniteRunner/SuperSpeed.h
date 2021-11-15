@@ -23,9 +23,9 @@ public:
 	//Create The BluePrint Scene
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class USceneComponent* SceneComponent;
-	//Creates the Mesh in BluePrints
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		class UStaticMeshComponent* PowerUpMesh;
+	//Adds NiagaraComponent
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+		class UNiagaraComponent* PowerUpPart;
 	//Create the Sphere Collider
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class USphereComponent* SphereCollider;

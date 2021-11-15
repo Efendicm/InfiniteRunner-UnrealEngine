@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/ArrowComponent.h"
 #include "Obstacle.h"
+#include "SuperFly.h"
 #include <InfiniteRunner/SuperSpeed.h>
 #include "LevelSpawner.generated.h"
 
@@ -30,6 +31,9 @@ public:
 	//Used to call the Power Up item
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 		TSubclassOf<ASuperSpeed> SpeedClass;
+	//Used to call the Power Up item
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		TSubclassOf<ASuperFly> FlyClass;
 	//Used to call the Coins in game
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 	TSubclassOf<ACoinItem> CoinItemClass;
@@ -80,13 +84,13 @@ public:
 	UBoxComponent* FloorTriggerBox;
 	//Used to create Spawn Percentages for Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-		float SpawnPercent1 = 0.2f;
+		float SpawnPercent1 = 0.3f;
 	//Used to create Spawn Percentages for Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-		float SpawnPercent2 = 0.3f;
+		float SpawnPercent2 = 0.5f;
 	//Used to create Spawn Percentages for Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-		float SpawnPercent3 = 0.5f;
+		float SpawnPercent3 = 0.7f;
 
 	//called to spawn the items
 	UFUNCTION(BlueprintCallable)

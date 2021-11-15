@@ -1,24 +1,21 @@
-
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "EndlessRunnerGameModeBase.generated.h"
+#include "WaterGameMode.generated.h"
 
-
-class ALevelSpawner;
+class AWaterLevelSpawner;
 class UUserWidget;
 //Create A muticast event for the Coin total
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCoinCountChanged, int32, CoinTotal);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaterCoinCountChanged, int32, CoinTotal);
 
 UCLASS()
-
-class INFINITERUNNER_API AEndlessRunnerGameModeBase : public AGameModeBase
+class INFINITERUNNER_API AWaterGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
+	
 public:
 	//Used to to store the current gaems Coins
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -37,13 +34,13 @@ public:
 		TSubclassOf<UUserWidget> GameOverScreenClass;
 	//Create The Left Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassLeft;
+		TSubclassOf<AWaterLevelSpawner> FloorTileClassLeft;
 	//Create The Right Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassRight;
+		TSubclassOf<AWaterLevelSpawner> FloorTileClassRight;
 	//Create the Middle Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassMiddle;
+		TSubclassOf<AWaterLevelSpawner> FloorTileClassMiddle;
 	//Used to call The GameHUDWidgetClass
 	UPROPERTY(VisibleInstanceOnly, Category = "Runtime")
 		class UGameHUDWidget* GameHUD;
@@ -71,33 +68,32 @@ public:
 	//Create the Power Up
 	UFUNCTION(BlueprintCallable)
 		void PowerUp();
-	//gets called from coin class to increase amount of coins
-	UFUNCTION(BlueprintCallable)
-		void AddCoin();
 	//Calls when powerUp is Over
 	UFUNCTION(BlueprintCallable)
 		void PowerUpOver();
-
+	//gets called from coin class to increase amount of coins
+	UFUNCTION(BlueprintCallable)
+		void AddCoin();
 	//Create a pause for the game
 	UFUNCTION(BlueprintCallable)
 		void GamePaused();
-//Unpauses the game
+	//Unpauses the game
 	UFUNCTION(BlueprintCallable)
 		void GameUnPaused();
 	//Used to create Floors 
 	UFUNCTION(BlueprintCallable)
-	void CreateInitialFloorTilesLeft();
+		void CreateInitialFloorTilesLeft();
 	void CreateInitialFloorTilesMiddle();
 	void CreateInitialFloorTilesRight();
 
 	//Called to Create a varible to hold the amount of coins the player has
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
-		FOnCoinCountChanged OnCoinCountChanged;
+		FOnWaterCoinCountChanged OnCoinCountChanged;
 	//Adds the floors to the game
 	UFUNCTION(BlueprintCallable)
-	ALevelSpawner* AddFloorTileLeft(const bool LSpawnItems);
-	ALevelSpawner* AddFloorTileMiddle(const bool MSpawnItems);
-	ALevelSpawner* AddFloorTileRight(const bool RSpawnItems);
+	AWaterLevelSpawner* AddFloorTileLeft(const bool LSpawnItems);
+	AWaterLevelSpawner* AddFloorTileMiddle(const bool MSpawnItems);
+	AWaterLevelSpawner* AddFloorTileRight(const bool RSpawnItems);
 
 protected:
 	//Timer for GameOver to Stop the game and show the Animatiion Death

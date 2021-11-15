@@ -4,6 +4,9 @@
 
 #include "GameOver.h"
 #include "EndlessRunnerGameModeBase.h"
+#include <InfiniteRunner\SpaceGameMode.h>
+#include "WaterGameMode.h"
+#include "LavaLevelGameMode.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Animation/WidgetAnimation.h"
 #include "Components/Button.h"
@@ -12,6 +15,7 @@
 #include "Components/SlateWrapperTypes.h"
 #include "MyGameInstance.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
+#include <InfiniteRunner\Runner.h>
 
 
 void UGameHUDWidget::NativeConstruct()
@@ -19,10 +23,12 @@ void UGameHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 	//Store a list of animations to be called when ever
 	StoreWidgetAnimation();
-	//Create the Super Speed animation Icon
+	//Create the Super Speed and Super Fly animation Icon
 	SuperStrengthAnimation = GetAnimationByName(TEXT("SuperStrength"));
-	//hides  Super Speed when the game Begins
+	SuperFlyingAnimation = GetAnimationByName(TEXT("SuperFlying"));
+	//hides  Super Speed and Super Fly when the game Begins
 	Invincible->SetVisibility(ESlateVisibility::Collapsed);
+	SuperFly->SetVisibility(ESlateVisibility::Collapsed);
 	//Create the Pause Button to pause game
 	if (PauseBtn)
 	{
@@ -41,6 +47,36 @@ void UGameHUDWidget::InitializeHUD(AEndlessRunnerGameModeBase* RunGameMode)
 		CoinCount->SetText(FText::AsNumber(0));
 
 		RunGameMode->OnCoinCountChanged.AddDynamic(this, &UGameHUDWidget::SetCoinCount);
+	}
+}
+void UGameHUDWidget::InitializeLavaHUD(ALavaLevelGameMode* LavaLevel)
+{
+	if (LavaLevel)
+	{
+		UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
+		CoinCount->SetText(FText::AsNumber(0));
+
+		LavaLevel->OnCoinCountChanged.AddDynamic(this, &UGameHUDWidget::SetCoinCount);
+	}
+}
+void UGameHUDWidget::InitializeWaterHUD(AWaterGameMode* WaterLevel)
+{
+	if (WaterLevel)
+	{
+		UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
+		CoinCount->SetText(FText::AsNumber(0));
+
+		WaterLevel->OnCoinCountChanged.AddDynamic(this, &UGameHUDWidget::SetCoinCount);
+	}
+}
+void UGameHUDWidget::InitializeSpaceHUD(ASpaceGameMode* SpaceLevel)
+{
+	if (SpaceLevel)
+	{
+		UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
+		CoinCount->SetText(FText::AsNumber(0));
+
+		SpaceLevel->OnCoinCountChanged.AddDynamic(this, &UGameHUDWidget::SetCoinCount);
 	}
 }
 //Set the coin count as the store varible while playing
@@ -79,6 +115,24 @@ void UGameHUDWidget::PowerUpToHUD()
 	{
 		Invincible->SetVisibility(ESlateVisibility::Hidden);
 	}
+	if (SuperFlyOn)
+	{
+		SuperFly->SetVisibility(ESlateVisibility::Visible);
+		if (SuperFlyingAnimation)
+		{
+			PlayAnimation(SuperFlyingAnimation, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
+		}
+
+	}
+	if (!SuperFlyOn)
+	{
+		SuperFly->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UGameHUDWidget::Distance()
+{
+	
 }
 
 

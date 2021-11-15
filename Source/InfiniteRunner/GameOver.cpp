@@ -8,6 +8,9 @@
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include <Runtime\Engine\Classes\Kismet\KismetMathLibrary.h>
 #include <InfiniteRunner\EndlessRunnerGameModeBase.h>
+#include "LavaLevelGameMode.h"
+#include "SpaceGameMode.h"
+#include "WaterGameMode.h"
 #include "MyGameInstance.h"
 #include <InfiniteRunner\MySaveGame.h>
 
@@ -33,6 +36,30 @@ void UGameOver::CoinAmount(AEndlessRunnerGameModeBase* RunGameMode)
 		RunGameMode->OnCoinCountChanged.AddDynamic(this, &UGameOver::GetCoinTotal);
 	}
 }
+void UGameOver::CoinAmountLava(ALavaLevelGameMode* LavaGameMode)
+{
+	if (LavaGameMode)
+	{
+		CoinTotal->SetText(FText::AsNumber(0));
+		LavaGameMode->OnCoinCountChanged.AddDynamic(this, &UGameOver::GetCoinTotal);
+	}
+}
+void UGameOver::CoinAmountSpace(ASpaceGameMode* SpaceGameMode)
+{
+	if (SpaceGameMode)
+	{
+		CoinTotal->SetText(FText::AsNumber(0));
+		SpaceGameMode->OnCoinCountChanged.AddDynamic(this, &UGameOver::GetCoinTotal);
+	}
+}
+void UGameOver::CoinAmountWater(AWaterGameMode* WaterGameMode)
+{
+	if (WaterGameMode)
+	{
+		CoinTotal->SetText(FText::AsNumber(0));
+		WaterGameMode->OnCoinCountChanged.AddDynamic(this, &UGameOver::GetCoinTotal);
+	}
+}
 //Used to call the total amount of coins in the run
 void UGameOver::GetCoinTotal(const int32 Count)
 {
@@ -41,13 +68,34 @@ void UGameOver::GetCoinTotal(const int32 Count)
 //make the Function for the mainMenu buttton
 void UGameOver::OnMainMenuClick()
 {
-	UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
-	Coins->CoinsSaved();
+	UMyGameInstance* SavedData = Cast<UMyGameInstance>(GetGameInstance());
+	RunGame = Cast<AEndlessRunnerGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	LavaGame = Cast<ALavaLevelGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	SpaceGame = Cast<ASpaceGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	WaterGame = Cast<AWaterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (RunGame)
+	{
+		SavedData->CoinsSaved();
+	}
+	if (LavaGame)
+	{
+		SavedData->LavaCoinsSaved();
+	}
+	if (SpaceGame)
+	{
+		SavedData->SpaceCoinsSaved();
+	}
+	if (WaterGame)
+	{
+		SavedData->WaterCoinsSaved();
+	}
 	if (UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass())))
 	{
 		// Set data on the savegame object.
-		SaveGameInstance->PlayerCoins = Coins->TotalCoins;
-
+		SaveGameInstance->PlayerCoins = SavedData->TotalCoins;
+		SaveGameInstance->LavaMapBought = SavedData->LavaBought;
+		SaveGameInstance->WaterMapBought = SavedData->WaterBought;
+		SaveGameInstance->SpaceMapBought = SavedData->SpaceBought;
 		// Save the data immediately.
 		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("EndlessRunner"), 0))
 		{
@@ -63,13 +111,34 @@ void UGameOver::OnMainMenuClick()
 //Create Function for Restart Button
 void UGameOver::OnRestartClick()
 {
-	UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
-	Coins->CoinsSaved();
+	UMyGameInstance* SavedData = Cast<UMyGameInstance>(GetGameInstance());
+	RunGame = Cast<AEndlessRunnerGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	LavaGame = Cast<ALavaLevelGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	SpaceGame = Cast<ASpaceGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	WaterGame = Cast<AWaterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (RunGame)
+	{
+		SavedData->CoinsSaved();
+	}
+	if (LavaGame)
+	{
+		SavedData->LavaCoinsSaved();
+	}
+	if (SpaceGame)
+	{
+		SavedData->SpaceCoinsSaved();
+	}
+	if (WaterGame)
+	{
+		SavedData->WaterCoinsSaved();
+	}
 	if (UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass())))
 	{
 		// Set data on the savegame object.
-		SaveGameInstance->PlayerCoins = Coins->TotalCoins;
-
+		SaveGameInstance->PlayerCoins = SavedData->TotalCoins;
+		SaveGameInstance->LavaMapBought = SavedData->LavaBought;
+		SaveGameInstance->WaterMapBought = SavedData->WaterBought;
+		SaveGameInstance->SpaceMapBought = SavedData->SpaceBought;
 		// Save the data immediately.
 		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("EndlessRunner"), 0))
 		{

@@ -38,6 +38,12 @@ protected:
 	UFUNCTION()
 		void OnQuitClick();
 
+	UFUNCTION()
+		void OnStoreClick();
+
+	UFUNCTION()
+		void OnOkayClick();
+
 public:
 	//Calls the MainMenuGameMode
 	UPROPERTY(VisibleInstanceOnly)
@@ -51,6 +57,15 @@ public:
 	//Create The Quit Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* QuitBtn;
+	//Create The Start Button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UButton* StoreBtn;
+	//Create The Okay button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UButton* OkayBtn;
+	//OverLay Screen
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UCanvasPanel* BoughtEverything;
 	//Call the Amount of coins in the Whole game
 	UFUNCTION(BlueprintCallable)
 		void CoinAmount(AMainMenuGameMode* MainMenu);

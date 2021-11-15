@@ -2,14 +2,43 @@
 
 
 #include "MapPick.h"
+#include "StoreHUD.h"
 #include "MainMenuGameMode.h"
+#include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include "MainMenu.h"
+#include "MyGameInstance.h"
 #include <Runtime\Engine\Classes\Kismet\KismetMathLibrary.h>
 
 void UMapPick::NativeConstruct()
 {
+	SavedData = Cast<UMyGameInstance>(GetGameInstance());
+	//Used to call Function in RunGameMode
+	MenuGameMode = Cast<AMainMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	check(MenuGameMode);
+
+	LavaBtn->SetVisibility(ESlateVisibility::Collapsed);
+	LavaText->SetVisibility(ESlateVisibility::Collapsed);
+	WaterBtn->SetVisibility(ESlateVisibility::Collapsed);
+	WaterText->SetVisibility(ESlateVisibility::Collapsed);
+	SpaceBtn->SetVisibility(ESlateVisibility::Collapsed);
+	SpaceText->SetVisibility(ESlateVisibility::Collapsed);
+	if (SavedData->LavaBought)
+	{
+		LavaBtn->SetVisibility(ESlateVisibility::Visible);
+		LavaText->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (SavedData->WaterBought)
+	{
+		WaterBtn->SetVisibility(ESlateVisibility::Visible);
+		WaterText->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (SavedData->SpaceBought)
+	{
+		SpaceBtn->SetVisibility(ESlateVisibility::Visible);
+		SpaceText->SetVisibility(ESlateVisibility::Visible);
+	}
 	//Create the Day Map button
 	if (DayBtn)
 	{
@@ -24,6 +53,18 @@ void UMapPick::NativeConstruct()
 	if (BackBtn)
 	{
 		BackBtn->OnClicked.AddDynamic(this, &UMapPick::OnBackClick);
+	}
+	if (LavaBtn)
+	{
+		LavaBtn->OnClicked.AddDynamic(this, &UMapPick::OnLavaClick);
+	}
+	if (WaterBtn)
+	{
+		WaterBtn->OnClicked.AddDynamic(this, &UMapPick::OnWaterClick);
+	}
+	if (SpaceBtn)
+	{
+		SpaceBtn->OnClicked.AddDynamic(this, &UMapPick::OnSpaceClick);
 	}
 
 }
@@ -49,10 +90,33 @@ void UMapPick::OnNightClick()
 void UMapPick::OnBackClick()
 {
 	RemoveFromParent();
-	Menu = Cast<UMainMenu>(CreateWidget(GetWorld(), MainMenu));
-	check(Menu);
-	UMyGameInstance* Coins = Cast<UMyGameInstance>(GetGameInstance());
-	Menu->CoinCountAmount(Coins->TotalCoins);
-	Menu->AddToViewport();
+	MenuGameMode->StartBackBtn();
+}
+
+void UMapPick::OnWaterClick()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		UGameplayStatics::OpenLevel(World, TEXT("WaterMap"));
+	}
+}
+
+void UMapPick::OnLavaClick()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		UGameplayStatics::OpenLevel(World, TEXT("LavaMap"));
+	}
+}
+
+void UMapPick::OnSpaceClick()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		UGameplayStatics::OpenLevel(World, TEXT("SpaceMap"));
+	}
 }
 

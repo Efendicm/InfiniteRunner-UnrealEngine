@@ -1,23 +1,26 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "EndlessRunnerGameModeBase.h"
+
+#include "LavaLevelGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "GameHUDWidget.h"
 #include "GameOver.h"
+#include "LavaLevelSpawner.h"
 #include "MainMenu.h"
 #include "MyGameInstance.h"
-#include "LevelSpawner.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include <InfiniteRunner\Runner.h>
 
 
-void AEndlessRunnerGameModeBase::BeginPlay()
+void ALavaLevelGameMode::BeginPlay()
 {
+
 	//Create the Characters main hud calling to make the coins count
 	GameHUD = Cast<UGameHUDWidget>(CreateWidget(GetWorld(), GameHUDClass));
 	//Checks to see if the HUD is valid 
 	check(GameHUD);
 	//Calls to count the coins
-	GameHUD->InitializeHUD(this);
+	GameHUD->InitializeLavaHUD(this);
 	//Adds Distance
 	GameHUD->Distance();
 	//Adds it to the game
@@ -27,7 +30,7 @@ void AEndlessRunnerGameModeBase::BeginPlay()
 	//Checks to see if GameOver is valid
 	check(GameOverCoins);
 	//Calls the coins collected to the HUD
-	GameOverCoins->CoinAmount(this);
+	GameOverCoins->CoinAmountLava(this);
 
 	//Create The First 10 Floors fore endless spawning
 	CreateInitialFloorTilesMiddle();
@@ -41,7 +44,7 @@ void AEndlessRunnerGameModeBase::BeginPlay()
 	}
 }
 //Create the default middle floors to have floors spawned already
-void AEndlessRunnerGameModeBase::CreateInitialFloorTilesMiddle()
+void ALavaLevelGameMode::CreateInitialFloorTilesMiddle()
 {
 	//Used to make the first floor have no Obsticles
 	AddFloorTileMiddle(false);
@@ -51,7 +54,7 @@ void AEndlessRunnerGameModeBase::CreateInitialFloorTilesMiddle()
 	}
 }
 //Create the default Left floors to have floors spawned already
-void AEndlessRunnerGameModeBase::CreateInitialFloorTilesLeft()
+void ALavaLevelGameMode::CreateInitialFloorTilesLeft()
 {
 	for (int i = 0; i < NumInitialFloorTilesLeft; i++)
 	{
@@ -59,7 +62,7 @@ void AEndlessRunnerGameModeBase::CreateInitialFloorTilesLeft()
 	}
 }
 //Create the default Right floors to have floors spawned already
-void AEndlessRunnerGameModeBase::CreateInitialFloorTilesRight()
+void ALavaLevelGameMode::CreateInitialFloorTilesRight()
 {
 	for (int i = 0; i < NumInitialFloorTilesRight; i++)
 	{
@@ -67,12 +70,12 @@ void AEndlessRunnerGameModeBase::CreateInitialFloorTilesRight()
 	}
 }
 //Adds Middle floors to the game based on the box collider on the given floor
-ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileMiddle(const bool MSpawnItems)
+ALavaLevelSpawner* ALavaLevelGameMode::AddFloorTileMiddle(const bool MSpawnItems)
 {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		ALevelSpawner* Tile = World->SpawnActor<ALevelSpawner>(FloorTileClassMiddle, NextSpawnPoint);
+		ALavaLevelSpawner* Tile = World->SpawnActor<ALavaLevelSpawner>(FloorTileClassMiddle, NextSpawnPoint);
 
 		if (Tile)
 		{
@@ -89,12 +92,12 @@ ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileMiddle(const bool MSpawnI
 	return nullptr;
 }
 //Adds Right floors to the game based on the box collider on the given floor
-ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileRight(const bool RSpawnItems)
+ALavaLevelSpawner* ALavaLevelGameMode::AddFloorTileRight(const bool RSpawnItems)
 {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		ALevelSpawner* Tile = World->SpawnActor<ALevelSpawner>(FloorTileClassRight, NextSpawnPoint);
+		ALavaLevelSpawner* Tile = World->SpawnActor<ALavaLevelSpawner>(FloorTileClassRight, NextSpawnPoint);
 
 		if (Tile)
 		{
@@ -111,12 +114,12 @@ ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileRight(const bool RSpawnIt
 	return nullptr;
 }
 //Adds Left floors to the game based on the box collider on the given floor
-ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileLeft(const bool LSpawnItems)
+ALavaLevelSpawner* ALavaLevelGameMode::AddFloorTileLeft(const bool LSpawnItems)
 {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		ALevelSpawner* Tile = World->SpawnActor<ALevelSpawner>(FloorTileClassLeft, NextSpawnPoint);
+		ALavaLevelSpawner* Tile = World->SpawnActor<ALavaLevelSpawner>(FloorTileClassLeft, NextSpawnPoint);
 
 		if (Tile)
 		{
@@ -133,34 +136,34 @@ ALevelSpawner* AEndlessRunnerGameModeBase::AddFloorTileLeft(const bool LSpawnIte
 	return nullptr;
 }
 //Used to count the coins collected
-void AEndlessRunnerGameModeBase::AddCoin()
+void ALavaLevelGameMode::AddCoin()
 {
 	TotalCoins += 1;
 	OnCoinCountChanged.Broadcast(TotalCoins);
 }
 
 //Adds the GameHUD Back to Port
-void AEndlessRunnerGameModeBase::GameUnPaused()
+void ALavaLevelGameMode::GameUnPaused()
 {
 	GameHUD->AddToViewport();
 }
 //Pauses the Game and Removes the GameHUD
-void AEndlessRunnerGameModeBase::GamePaused()
+void ALavaLevelGameMode::GamePaused()
 {
-		GameHUD->RemoveFromParent();
+	GameHUD->RemoveFromParent();
 }
 //Create The GameOver Screen
-void AEndlessRunnerGameModeBase::GameOver()
+void ALavaLevelGameMode::GameOver()
 {
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 	if (IsValid(GameOverScreenClass))
 	{
-			GameOverCoins->AddToViewport();
-		
+		GameOverCoins->AddToViewport();
+
 	}
 }
 //Used to Call the power up from Super Speed Class To Increase Speed and Destroy Object but also add the Icon to the HUD
-void AEndlessRunnerGameModeBase::PowerUp()
+void ALavaLevelGameMode::PowerUp()
 {
 	if (PowerUpOn)
 	{
@@ -181,15 +184,15 @@ void AEndlessRunnerGameModeBase::PowerUp()
 
 	}
 	if (!SuperFlying)
-	{	
+	{
 		GameHUD->SuperFlyOn = false;
 		GameHUD->PowerUpToHUD();
 
 	}
-	
+
 }
 //Calls the PowerUp bool to be false and Makes the HUD icon Disappear
-void AEndlessRunnerGameModeBase::PowerUpOver()
+void ALavaLevelGameMode::PowerUpOver()
 {
 	PowerUpOn = false;
 	if (!PowerUpOn)

@@ -8,7 +8,8 @@
 #include "Obstacle.h"
 #include "SuperFly.h"
 #include <InfiniteRunner/SuperSpeed.h>
-#include "LavaLevelSpawner.generated.h"
+#include "WaterLevelSpawner.generated.h"
+
 
 class ACoinItem;
 class UStaticMeshComponent;
@@ -16,14 +17,12 @@ class USceneComponent;
 class UBoxComponent;
 class UArrowComponent;
 
-
-
 UCLASS()
-class INFINITERUNNER_API ALavaLevelSpawner : public AActor
+class INFINITERUNNER_API AWaterLevelSpawner : public AActor
 {
 	GENERATED_BODY()
 	
-public:
+public:	
 	//Create the Small Obstacles calling to the BluePrint
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 		TSubclassOf<AObstacle> SmallObstacleClass;
@@ -86,7 +85,7 @@ public:
 		UBoxComponent* FloorTriggerBox;
 	//Used to create Spawn Percentages for Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-		float SpawnPercent1 = 0.4f;
+		float SpawnPercent1 = 0.3f;
 	//Used to create Spawn Percentages for Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 		float SpawnPercent2 = 0.5f;
@@ -97,9 +96,8 @@ public:
 	//called to spawn the items
 	UFUNCTION(BlueprintCallable)
 		void SpawnItems();
-
 	// Sets default values for this actor's properties
-	ALavaLevelSpawner();
+	AWaterLevelSpawner();
 	FORCEINLINE const FTransform& GetAttachTransformLeft() const
 	{
 		return AttachLeft->GetComponentTransform();
@@ -113,10 +111,17 @@ public:
 		return AttachRight->GetComponentTransform();
 	}
 
+
 protected:
 	//calls to see Gamemode
 	UPROPERTY(VisibleInstanceOnly)
-		class ALavaLevelGameMode* LavaRunGameMode;
+		class AWaterGameMode* WaterGameMode;
+	//Calls obstcale class
+	UPROPERTY(VisibleInstanceOnly)
+		class AObstacle* Obs;
+	//calls Coin class
+	UPROPERTY(VisibleInstanceOnly)
+		class ACoinItem* DestroyCoin;
 	//used to count down time before the Island destroyed
 	UPROPERTY()
 		FTimerHandle DestroyHandle;
@@ -130,6 +135,7 @@ protected:
 	UFUNCTION()
 		void DestroyFloorTile();
 
+	// Called when the game starts or 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -1,21 +1,18 @@
-
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "EndlessRunnerGameModeBase.generated.h"
-
+#include "LavaLevelGameMode.generated.h"
 
 class ALevelSpawner;
 class UUserWidget;
 //Create A muticast event for the Coin total
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCoinCountChanged, int32, CoinTotal);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLavaCoinCountChanged, int32, CoinTotal);
 
 UCLASS()
-
-class INFINITERUNNER_API AEndlessRunnerGameModeBase : public AGameModeBase
+class INFINITERUNNER_API ALavaLevelGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
@@ -37,13 +34,13 @@ public:
 		TSubclassOf<UUserWidget> GameOverScreenClass;
 	//Create The Left Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassLeft;
+		TSubclassOf<ALavaLevelSpawner> FloorTileClassLeft;
 	//Create The Right Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassRight;
+		TSubclassOf<ALavaLevelSpawner> FloorTileClassRight;
 	//Create the Middle Floors
 	UPROPERTY(EditAnywhere, Category = "Config")
-		TSubclassOf<ALevelSpawner> FloorTileClassMiddle;
+		TSubclassOf<ALavaLevelSpawner> FloorTileClassMiddle;
 	//Used to call The GameHUDWidgetClass
 	UPROPERTY(VisibleInstanceOnly, Category = "Runtime")
 		class UGameHUDWidget* GameHUD;
@@ -53,6 +50,9 @@ public:
 	//Calls to the Game Instance class
 	UPROPERTY(VisibleInstanceOnly)
 		class UMyGameInstance* Game;
+	//Calls to the Game Instance class
+	UPROPERTY(VisibleInstanceOnly)
+		class AEndlessRunnerGameModeBase* RunGameMode;
 	//Create the default numver of floors to spawn on start for Left
 	UPROPERTY(EditAnywhere, Category = "Config")
 		int32 NumInitialFloorTilesLeft = 10;
@@ -71,33 +71,32 @@ public:
 	//Create the Power Up
 	UFUNCTION(BlueprintCallable)
 		void PowerUp();
-	//gets called from coin class to increase amount of coins
-	UFUNCTION(BlueprintCallable)
-		void AddCoin();
 	//Calls when powerUp is Over
 	UFUNCTION(BlueprintCallable)
 		void PowerUpOver();
-
+	//gets called from coin class to increase amount of coins
+	UFUNCTION(BlueprintCallable)
+		void AddCoin();
 	//Create a pause for the game
 	UFUNCTION(BlueprintCallable)
 		void GamePaused();
-//Unpauses the game
+	//Unpauses the game
 	UFUNCTION(BlueprintCallable)
 		void GameUnPaused();
 	//Used to create Floors 
 	UFUNCTION(BlueprintCallable)
-	void CreateInitialFloorTilesLeft();
+		void CreateInitialFloorTilesLeft();
 	void CreateInitialFloorTilesMiddle();
 	void CreateInitialFloorTilesRight();
 
 	//Called to Create a varible to hold the amount of coins the player has
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
-		FOnCoinCountChanged OnCoinCountChanged;
+		FOnLavaCoinCountChanged OnCoinCountChanged;
 	//Adds the floors to the game
 	UFUNCTION(BlueprintCallable)
-	ALevelSpawner* AddFloorTileLeft(const bool LSpawnItems);
-	ALevelSpawner* AddFloorTileMiddle(const bool MSpawnItems);
-	ALevelSpawner* AddFloorTileRight(const bool RSpawnItems);
+	ALavaLevelSpawner* AddFloorTileLeft(const bool LSpawnItems);
+	ALavaLevelSpawner* AddFloorTileMiddle(const bool MSpawnItems);
+	ALavaLevelSpawner* AddFloorTileRight(const bool RSpawnItems);
 
 protected:
 	//Timer for GameOver to Stop the game and show the Animatiion Death
@@ -105,5 +104,5 @@ protected:
 		FTimerHandle RestartTimerHandle;
 
 	virtual void BeginPlay() override;
-
+	
 };

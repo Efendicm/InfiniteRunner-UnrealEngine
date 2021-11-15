@@ -7,4 +7,5 @@ UMySaveGame::UMySaveGame()
 {
     //Used to Create a saved Slot
     SaveSlotName = TEXT("EndlessRunner");
+    UserIndex = 0;
 }

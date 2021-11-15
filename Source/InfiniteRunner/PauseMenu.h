@@ -18,9 +18,21 @@ class INFINITERUNNER_API UPauseMenu : public UUserWidget
 
 
 protected:
+	//Used to call MainMenuGameMode
+	UPROPERTY(EditAnywhere)
+		class AMainMenuGameMode* MenuGameMode;
 	//Calls the RunGameMode
 	UPROPERTY(VisibleInstanceOnly)
 		class AEndlessRunnerGameModeBase* RunGameMode;
+	//Calls to LavaLevelGameMode
+	UPROPERTY(VisibleInstanceOnly)
+		class ALavaLevelGameMode* LavaGame;
+	//Calls to LavaLevelGameMode
+	UPROPERTY(VisibleInstanceOnly)
+		class ASpaceGameMode* SpaceGame;
+	//Calls to LavaLevelGameMode
+	UPROPERTY(VisibleInstanceOnly)
+		class AWaterGameMode* WaterGame;
 	//Used to Create the Animation for PowerUp
 	UPROPERTY(VisibleInstanceOnly)
 		class UGameHUDWidget* Animation;

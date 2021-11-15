@@ -3,7 +3,7 @@
 
 #include "LavaLevelSpawner.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
-#include "EndlessRunnerGameModeBase.h"
+#include "LavaLevelGameMode.h"
 #include "Runner.h"
 #include "CoinItem.h"
 #include "SuperSpeed.h"
@@ -73,9 +73,9 @@ void ALavaLevelSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	//Calls to see if RunGameMode being Called 
-	RunGameMode = Cast<AEndlessRunnerGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	LavaRunGameMode = Cast<ALavaLevelGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-	check(RunGameMode);
+	check(LavaRunGameMode);
 	//Calls to active Trigger box on Island For overlap
 	FloorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ALavaLevelSpawner::OnTriggerBoxOverlap);
 }
@@ -90,7 +90,7 @@ void ALavaLevelSpawner::Tick(float DeltaTime)
 void ALavaLevelSpawner::SpawnItems()
 {
 	//Checks to see if the Obstacles and items are Valid to spawn them and not crash the game
-	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinItemClass) && IsValid(SpeedClass))
+	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinItemClass) && IsValid(SpeedClass) && IsValid(FlyClass))
 	{
 		SpawnLaneItems(MiddleLeft);
 		SpawnLaneItems(Middle);
@@ -128,6 +128,10 @@ void ALavaLevelSpawner::SpawnLaneItems(UArrowComponent* Lane)
 	{
 		ASuperSpeed* Speed = GetWorld()->SpawnActor<ASuperSpeed>(SpeedClass, SpawnLocation, SpawnParameters);
 	}
+	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, 0.25f, 0.4f, true, true))
+	{
+		ASuperFly* Fly = GetWorld()->SpawnActor<ASuperFly>(FlyClass, SpawnLocation, SpawnParameters);
+	}
 
 
 }
@@ -139,9 +143,9 @@ void ALavaLevelSpawner::OnTriggerBoxOverlap(UPrimitiveComponent* OverlappedCompo
 
 	if (RunCharacter)
 	{
-		RunGameMode->AddFloorTileMiddle(true);
-		RunGameMode->AddFloorTileLeft(true);
-		RunGameMode->AddFloorTileRight(true);
+		LavaRunGameMode->AddFloorTileMiddle(true);
+		LavaRunGameMode->AddFloorTileLeft(true);
+		LavaRunGameMode->AddFloorTileRight(true);
 
 		GetWorldTimerManager().SetTimer(DestroyHandle, this, &ALavaLevelSpawner::DestroyFloorTile, 2.f, false);
 	}
